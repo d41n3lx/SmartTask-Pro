@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartTask Pro | Workspace Productivity & Project Management</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav>
+    <div class="logo"><i class="fas fa-check-double"></i> SmartTask<span class="dot">Pro</span></div>
+    <ul>
+      <li><a href="#dashboard">Dashboard</a></li>
+      <li><a href="#board">Task Board</a></li>
+      <li><a href="#analytics">Analytics</a></li>
+    </ul>
+    <button class="btn-create" onclick="openTaskModal()"><i class="fas fa-plus"></i> New Task</button>
+  </nav>
+
+  <header id="dashboard" class="hero">
+    <div class="hero-container">
+      <div class="badge-pill"><i class="fas fa-bolt"></i> Real-time Team Collaboration Workspace</div>
+      <h1>Streamline Workflows.<br><span class="gradient-text">Ship Projects Faster.</span></h1>
+      <p>Organize backlog, assign priorities, and monitor sprint progress with interactive task tracking.</p>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <i class="fas fa-tasks icon-emerald"></i>
+          <div>
+            <h3 id="statTotal">0</h3>
+            <p>Total Tasks</p>
+          </div>
+        </div>
+        <div class="metric-card">
+          <i class="fas fa-spinner icon-cyan"></i>
+          <div>
+            <h3 id="statProgress">0</h3>
+            <p>In Progress</p>
+          </div>
+        </div>
+        <div class="metric-card">
+          <i class="fas fa-check-circle icon-green"></i>
+          <div>
+            <h3 id="statCompleted">0</h3>
+            <p>Completed</p>
+          </div>
+        </div>
+        <div class="metric-card">
+          <i class="fas fa-chart-line icon-amber"></i>
+          <div>
+            <h3 id="statCompletionRate">0%</h3>
+            <p>Completion Rate</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="progress-bar-container">
+        <div class="progress-labels">
+          <span>Sprint Progress</span>
+          <span id="progressText">0% Complete</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="controls-section">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="Search tasks by title, category, or assignee..." onkeyup="filterTasks()">
+    </div>
+
+    <div class="filter-group">
+      <select id="priorityFilter" onchange="filterTasks()">
+        <option value="all">All Priorities</option>
+        <option value="High">High Priority</option>
+        <option value="Medium">Medium Priority</option>
+        <option value="Low">Low Priority</option>
+      </select>
+
+      <select id="categoryFilter" onchange="filterTasks()">
+        <option value="all">All Categories</option>
+        <option value="Frontend">Frontend</option>
+        <option value="Backend">Backend</option>
+        <option value="Design">Design</option>
+        <option value="QA">QA / Testing</option>
+      </select>
+    </div>
+  </section>
+
+  <main id="board" class="board-container">
+    
+    <div class="column">
+      <div class="column-header">
+        <div class="column-title"><span class="status-indicator status-todo"></span> To Do</div>
+        <span class="count-badge" id="countTodo">0</span>
+      </div>
+      <div class="task-list" id="colTodo"></div>
+    </div>
+
+    <div class="column">
+      <div class="column-header">
+        <div class="column-title"><span class="status-indicator status-progress"></span> In Progress</div>
+        <span class="count-badge" id="countProgress">0</span>
+      </div>
+      <div class="task-list" id="colProgress"></div>
+    </div>
+
+    <div class="column">
+      <div class="column-header">
+        <div class="column-title"><span class="status-indicator status-review"></span> In Review</div>
+        <span class="count-badge" id="countReview">0</span>
+      </div>
+      <div class="task-list" id="colReview"></div>
+    </div>
+
+    <div class="column">
+      <div class="column-header">
+        <div class="column-title"><span class="status-indicator status-done"></span> Completed</div>
+        <span class="count-badge" id="countDone">0</span>
+      </div>
+      <div class="task-list" id="colDone"></div>
+    </div>
+
+  </main>
+
+  <div class="modal-overlay" id="taskModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Create New Task</h2>
+        <button class="close-btn" onclick="closeTaskModal()">&times;</button>
+      </div>
+
+      <form id="taskForm" onsubmit="handleTaskSubmit(event)">
+        <div class="form-group">
+          <label>Task Title</label>
+          <input type="text" id="taskTitle" placeholder="e.g. Implement OAuth2 Authentication" required>
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="taskDesc" placeholder="Provide detail or context about this deliverable..." required></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+            <select id="taskCategory">
+              <option value="Frontend">Frontend</option>
+              <option value="Backend">Backend</option>
+              <option value="Design">Design</option>
+              <option value="QA">QA / Testing</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Priority</label>
+            <select id="taskPriority">
+              <option value="High">High</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Assignee</label>
+            <input type="text" id="taskAssignee" placeholder="e.g. Daniel G." required>
+          </div>
+
+          <div class="form-group">
+            <label>Initial Status</label>
+            <select id="taskStatus">
+              <option value="todo">To Do</option>
+              <option value="progress">In Progress</option>
+              <option value="review">In Review</option>
+              <option value="done">Completed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" onclick="closeTaskModal()">Cancel</button>
+          <button type="submit" class="btn-submit">Add Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <p>SmartTask Pro Workspaces • Built by <strong>Daniel Gwoloba</strong></p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+  </html>
